@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evening Dental Hygiene Reward Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .streak-counter {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .quick-action {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .tepe-btn {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .waterpik-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .brush-btn {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .quick-btn.completed {
+            opacity: 0.6;
+            transform: scale(0.98);
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day-cell:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .day-number {
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .task-indicators {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .task-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        .task-dot.tepe { background: #43e97b; }
+        .task-dot.waterpik { background: #4facfe; }
+        .task-dot.brush { background: #fa709a; }
+
+        .day-cell.all-complete {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-color: #fdcb6e;
+            box-shadow: 0 4px 10px rgba(253, 203, 110, 0.4);
+        }
+
+        .rewards-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .rewards-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .reward-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .reward-progress {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            z-index: 1000;
+            pointer-events: none;
+            animation: celebrate 1s ease-out;
+            opacity: 0;
+        }
+
+        @keyframes celebrate {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .reset-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .reset-btn:hover {
+            background: #ee5a52;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦷 Evening Dental Hygiene</h1>
+        <p class="subtitle">Build your healthy habit streak!</p>
+
+        <div class="streak-counter" id="streakCounter">
+            🔥 Current Streak: 0 Days
+        </div>
+
+        <div class="quick-action">
+            <button class="quick-btn tepe-btn" onclick="toggleTask('tepe')">
+                <span id="tepe-icon">✓</span> TePe Brushes
+            </button>
+            <button class="quick-btn waterpik-btn" onclick="toggleTask('waterpik')">
+                <span id="waterpik-icon">✓</span> Waterpik
+            </button>
+            <button class="quick-btn brush-btn" onclick="toggleTask('brush')">
+                <span id="brush-icon">✓</span> Toothbrush
+            </button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="completedDays">0</div>
+                <div class="stat-label">Perfect Days</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="completionRate">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="bestStreak">0</div>
+                <div class="stat-label">Best Streak</div>
+            </div>
+        </div>
+
+        <div class="calendar" id="calendar"></div>
+
+        <div class="rewards-section">
+            <h2>🎁 Your Rewards Progress</h2>
+            <div class="reward-item">
+                <span>3 perfect days → Favorite treat or extra screen time</span>
+                <span class="reward-progress" id="reward3">0/3</span>
+            </div>
+            <div class="reward-item">
+                <span>7 perfect days → Small purchase you've been wanting</span>
+                <span class="reward-progress" id="reward7">0/7</span>
+            </div>
+            <div class="reward-item">
+                <span>14 perfect days → Bigger reward of your choice!</span>
+                <span class="reward-progress" id="reward14">0/14</span>
+            </div>
+            <div class="reward-item">
+                <span>30 perfect days → Major reward! 🎉</span>
+                <span class="reward-progress" id="reward30">0/30</span>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">Reset All Data</button>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        const STORAGE_KEY = 'dentalHygieneData';
+        let data = loadData();
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return {
+                days: {},
+                currentStreak: 0,
+                bestStreak: 0
+            };
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function getTodayKey() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        function getTodayData() {
+            const key = getTodayKey();
+            if (!data.days[key]) {
+                data.days[key] = {
+                    tepe: false,
+                    waterpik: false,
+                    brush: false
+                };
+            }
+            return data.days[key];
+        }
+
+        function toggleTask(task) {
+            const today = getTodayData();
+            today[task] = !today[task];
+            
+            const btn = document.querySelector(`.${task}-btn`);
+            const icon = document.getElementById(`${task}-icon`);
+            
+            if (today[task]) {
+                btn.classList.add('completed');
+                icon.textContent = '✓';
+                celebrate('✨');
+            } else {
+                btn.classList.remove('completed');
+                icon.textContent = '✓';
+            }
+
+            if (today.tepe && today.waterpik && today.brush) {
+                celebrate('🎉 Perfect! All done!');
+            }
+
+            updateStreak();
+            updateCalendar();
+            updateStats();
+            saveData();
+        }
+
+        function celebrate(emoji) {
+            const celebDiv = document.getElementById('celebration');
+            celebDiv.textContent = emoji;
+            celebDiv.style.animation = 'none';
+            setTimeout(() => {
+                celebDiv.style.animation = 'celebrate 1s ease-out';
+            }, 10);
+        }
+
+        function updateStreak() {
+            let streak = 0;
+            const today = new Date();
+            
+            for (let i = 0; i < 365; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(today.getDate() - i);
+                const key = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+                
+                const dayData = data.days[key];
+                if (dayData && dayData.tepe && dayData.waterpik && dayData.brush) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+
+            data.currentStreak = streak;
+            if (streak > data.bestStreak) {
+                data.bestStreak = streak;
+            }
+
+            document.getElementById('streakCounter').textContent = `🔥 Current Streak: ${streak} Days`;
+        }
+
+        function updateCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            days.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                calendar.appendChild(header);
+            });
+
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendar.appendChild(document.createElement('div'));
+            }
+
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                
+                const dateKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayData = data.days[dateKey] || { tepe: false, waterpik: false, brush: false };
+
+                const dayNum = document.createElement('div');
+                dayNum.className = 'day-number';
+                dayNum.textContent = day;
+                cell.appendChild(dayNum);
+
+                const indicators = document.createElement('div');
+                indicators.className = 'task-indicators';
+
+                const tepeDot = document.createElement('div');
+                tepeDot.className = `task-dot tepe ${dayData.tepe ? '' : ''}`;
+                tepeDot.style.background = dayData.tepe ? '#43e97b' : '#ddd';
+                indicators.appendChild(tepeDot);
+
+                const waterpikDot = document.createElement('div');
+                waterpikDot.className = `task-dot waterpik ${dayData.waterpik ? '' : ''}`;
+                waterpikDot.style.background = dayData.waterpik ? '#4facfe' : '#ddd';
+                indicators.appendChild(waterpikDot);
+
+                const brushDot = document.createElement('div');
+                brushDot.className = `task-dot brush ${dayData.brush ? '' : ''}`;
+                brushDot.style.background = dayData.brush ? '#fa709a' : '#ddd';
+                indicators.appendChild(brushDot);
+
+                cell.appendChild(indicators);
+
+                if (dayData.tepe && dayData.waterpik && dayData.brush) {
+                    cell.classList.add('all-complete');
+                }
+
+                calendar.appendChild(cell);
+            }
+        }
+
+        function updateStats() {
+            let completedDays = 0;
+            let totalDays = 0;
+
+            for (const key in data.days) {
+                const day = data.days[key];
+                totalDays++;
+                if (day.tepe && day.waterpik && day.brush) {
+                    completedDays++;
+                }
+            }
+
+            document.getElementById('completedDays').textContent = completedDays;
+            document.getElementById('completionRate').textContent = 
+                totalDays > 0 ? `${Math.round((completedDays / totalDays) * 100)}%` : '0%';
+            document.getElementById('bestStreak').textContent = data.bestStreak;
+
+            document.getElementById('reward3').textContent = `${Math.min(completedDays, 3)}/3`;
+            document.getElementById('reward7').textContent = `${Math.min(completedDays, 7)}/7`;
+            document.getElementById('reward14').textContent = `${Math.min(completedDays, 14)}/14`;
+            document.getElementById('reward30').textContent = `${Math.min(completedDays, 30)}/30`;
+        }
+
+        function resetAll() {
+            if (confirm('Are you sure you want to reset all your progress? This cannot be undone!')) {
+                localStorage.removeItem(STORAGE_KEY);
+                data = loadData();
+                init();
+            }
+        }
+
+        function init() {
+            const today = getTodayData();
+            
+            if (today.tepe) {
+                document.querySelector('.tepe-btn').classList.add('completed');
+            }
+            if (today.waterpik) {
+                document.querySelector('.waterpik-btn').classList.add('completed');
+            }
+            if (today.brush) {
+                document.querySelector('.brush-btn').classList.add('completed');
+            }
+
+            updateStreak();
+            updateCalendar();
+            updateStats();
+        }
+
+        init();
+    </script>
+</body>
+</html>
